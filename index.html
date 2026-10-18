@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>現在時刻</title>
+<style>
+  :root {
+    --bg: #0B0E14;
+    --bg-2: #10141D;
+    --ink: #EDEBE3;
+    --ink-dim: #7E8494;
+    --accent: #C9A15A;
+    --rule: #232838;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    background: radial-gradient(ellipse at 50% 30%, var(--bg-2), var(--bg));
+    color: var(--ink);
+    font-family: -apple-system, "Hiragino Sans", "Yu Gothic", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: env(safe-area-inset-top, 0px) 24px env(safe-area-inset-bottom, 0px);
+  }
+
+  main {
+    text-align: center;
+    width: 100%;
+    max-width: 640px;
+  }
+
+  .date {
+    font-size: clamp(0.85rem, 2vw, 1rem);
+    letter-spacing: 0.04em;
+    color: var(--ink-dim);
+    margin-bottom: 18px;
+  }
+
+  .clock {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    font-family: "Courier New", ui-monospace, monospace;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .clock .h,
+  .clock .m {
+    font-size: clamp(3.2rem, 14vw, 7.5rem);
+  }
+
+  .clock .colon {
+    font-size: clamp(3.2rem, 14vw, 7.5rem);
+    color: var(--ink-dim);
+    margin: 0 0.06em;
+    transform: translateY(-0.06em);
+  }
+
+  .clock .s {
+    font-size: clamp(1.8rem, 7vw, 3.6rem);
+    color: var(--accent);
+    margin-left: 0.18em;
+    transition: opacity 0.15s ease;
+  }
+
+  .rule {
+    width: 64px;
+    height: 1px;
+    background: var(--rule);
+    margin: 28px auto;
+  }
+
+  .meta {
+    font-size: 0.8rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.03em;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #F6F5F0;
+      --bg-2: #FFFFFF;
+      --ink: #1B1D22;
+      --ink-dim: #8A8D96;
+      --accent: #9C7A34;
+      --rule: #E1DFD6;
+    }
+  }
+</style>
+</head>
+<body>
+<main>
+  <div class="date" id="date">-</div>
+  <div class="clock">
+    <span class="h" id="h">00</span><span class="colon">:</span><span class="m" id="m">00</span><span class="s" id="s">00</span>
+  </div>
+  <div class="rule"></div>
+  <div class="meta" id="tz">-</div>
+</main>
+
+<script>
+  const dateEl = document.getElementById('date');
+  const hEl = document.getElementById('h');
+  const mEl = document.getElementById('m');
+  const sEl = document.getElementById('s');
+  const tzEl = document.getElementById('tz');
+
+  const weekdays = ['日', '月', '火', '水', '木', '金', '土'];
+  const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function tick() {
+    const now = new Date();
+    hEl.textContent = pad(now.getHours());
+    mEl.textContent = pad(now.getMinutes());
+    sEl.textContent = pad(now.getSeconds());
+
+    dateEl.textContent =
+      `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日（${weekdays[now.getDay()]}）`;
+
+    tzEl.textContent = tz;
+  }
+
+  tick();
+  setInterval(tick, 1000);
+</script>
+</body>
+</html>
